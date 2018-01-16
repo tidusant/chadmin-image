@@ -117,11 +117,12 @@ func main() {
 
 			if ck != "" {
 				log.Debugf("check request")
+				log.Debugf("ck:%s", ck)
 				if rpsex.CheckRequest(c.Request.URL.Path, c.Request.UserAgent(), c.Request.Referer(), c.Request.RemoteAddr, "GET") {
 					log.Debugf("check sesion")
 					if rpsex.CheckSession(ck) {
 						log.Debugf("check aut")
-						client, err := rpc.Dial("tcp", "localhost:"+viper.GetString("RPCname.aut"))
+						client, err := rpc.Dial("tcp", viper.GetString("RPCname.aut"))
 						checkError("dial RPCAuth check login", err)
 						reply := ""
 						userIP, _, _ := net.SplitHostPort(c.Request.RemoteAddr)
