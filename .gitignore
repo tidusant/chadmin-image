@@ -1,0 +1,9 @@
+
+debug
+logs/
+portal.exe
+config.toml
+.vscode/launch.json
+.vscode/tasks.json
+*.exe
+*.exe~
