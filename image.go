@@ -129,6 +129,7 @@ func main() {
 						autCall := client.Go("Arith.Run", ck+"|"+userIP+"|"+"aut", &reply, nil)
 						autreplyCall := <-autCall.Done
 						checkError("RPCAuth.Go", autreplyCall.Error)
+						client.Close()
 
 						//RPC call
 						if reply != "" {
