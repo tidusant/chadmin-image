@@ -146,7 +146,7 @@ func main() {
 							} else {
 								filename += "/" + c.Param("p")
 							}
-							log.Debugf("type %s, filepath %s, p %s")
+							log.Debugf("type %s, filepath %s, p %s", filelocal, filename, c.Param("p"))
 							if _, err := os.Stat(uploadfolder); err == nil {
 								http.ServeFile(c.Writer, c.Request, uploadfolder+"/"+filename)
 								return
