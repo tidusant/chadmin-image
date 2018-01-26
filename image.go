@@ -186,7 +186,7 @@ func main() {
 
 func checkError(msg string, err error) bool {
 	if err != nil {
-		log.Errorf(msg+": ", err.Error())
+		log.Debugf(msg+": ", err.Error())
 		return false
 	}
 	return true
