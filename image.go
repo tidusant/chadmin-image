@@ -147,10 +147,13 @@ func main() {
 								filename += "/" + c.Param("p")
 							}
 							log.Debugf("type %s, filepath %s, p %s", filelocal, filename, c.Param("p"))
+							log.Debugf("uploadfolder %s", uploadfolder)
 							if _, err := os.Stat(uploadfolder); err == nil {
+								log.Debugf("ServeFile")
 								http.ServeFile(c.Writer, c.Request, uploadfolder+"/"+filename)
 								return
 							}
+							log.Debugf("NOT ServeFile")
 
 						} else {
 							log.Debugf("check aut fail")
