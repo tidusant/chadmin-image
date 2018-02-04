@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/tidusant/c3m-common/c3mcommon"
 	"github.com/tidusant/c3m-common/log"
 	rpsex "github.com/tidusant/chadmin-repo/session"
@@ -32,69 +34,21 @@ func main() {
 	flag.StringVar(&imagefolder, "imagefolder", "../upload/images", "Indicates if debug messages should be printed in log files")
 	flag.Parse()
 
-	//logLevel := log.DebugLevel
+	logLevel := log.DebugLevel
 	if !debug {
-		//logLevel = log.InfoLevel
+		logLevel = log.InfoLevel
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	// log.SetOutputFile(fmt.Sprintf("image-"+strconv.Itoa(port)), logLevel)
-	// defer log.CloseOutputFile()
-	// log.RedirectStdOut()
+	log.SetOutputFile(fmt.Sprintf("image-"+strconv.Itoa(port)), logLevel)
+	defer log.CloseOutputFile()
+	log.RedirectStdOut()
 
 	log.Infof("running with port:" + strconv.Itoa(port))
 
 	//init config
 
 	router := gin.Default()
-	// router.GET("/c/:ck", func(c *gin.Context) {
-
-	// 	u, err := url.Parse(c.Request.Header.Get("Referer"))
-	// 	checkError("get referer", err)
-	// 	requestDomain := c3mcommon.CheckDomain("http://" + u.Host)
-	// 	allowDomain := c3mcommon.CheckDomain(requestDomain)
-	// 	strrt := ""
-	// 	c.Header("Access-Control-Allow-Origin", "*")
-	// 	if allowDomain != "" {
-	// 		c.Header("Access-Control-Allow-Origin", allowDomain)
-	// 		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers,access-control-allow-credentials")
-	// 		c.Header("Access-Control-Allow-Credentials", "true")
-
-	// 		params := strings.Split(mycrypto.Decode(c.Param("ck")), "|")
-
-	// 		if len(params) > 1 {
-	// 			ck := params[0]
-	// 			shopid := params[1]
-	// 			log.Debugf("cookie:%s", ck)
-	// 			if ck != "" {
-	// 				if rpsex.CheckRequest(c.Request.URL.Path, c.Request.UserAgent(), c.Request.Referer(), c.Request.RemoteAddr, "POST") {
-	// 					if rpsex.CheckSession(ck) {
-
-	// 						//							expiration := time.Now().Add(365 * 24 * time.Hour)
-	// 						//							cookie := http.Cookie{Name: "myc", Value: mycrypto.Encode(ck, 3), Expires: expiration, Path: "/", Domain: "192.168.1.221:8083"}
-	// 						//							log.Debugf("set cookie myc:%s", ck)
-	// 						//							http.SetCookie(c.Writer, &cookie)
-	// 						//							cookie = http.Cookie{Name: "pos", Value: mycrypto.Encode(shopid, 4), Expires: expiration, Path: "/", Domain: "192.168.1.221:8083"}
-	// 						//							log.Debugf("set cookie pos:%s", shopid)
-	// 						//							http.SetCookie(c.Writer, &cookie)
-	// 						strrt += "alert(1);var d = new Date();"
-	// 						strrt += "d.setTime(d.getTime() + 24*60*60*1000);"
-	// 						strrt += "var expires = \"expires=\"+ d.toUTCString();"
-	// 						strrt += "document.cookie =\"myc=" + mycrypto.Encode(ck, 4) + ";\"+expires+\";path=/\";"
-	// 						strrt += "document.cookie =\"pos=" + mycrypto.Encode(shopid, 3) + ";\"+expires+\";path=/\";"
-	// 					} else {
-	// 						log.Debugf("check session fail")
-	// 					}
-	// 				} else {
-	// 					log.Debugf("check request fail")
-	// 				}
-	// 			}
-	// 		}
-	// 	} else {
-	// 		log.Debugf("Not allow " + requestDomain)
-	// 	}
-	// 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("<script>"+strrt+"</script>"))
-	// })
 
 	router.GET("/:type/:filepath/*p", func(c *gin.Context) {
 		log.Debugf("header:%v", c.Request.Header)
