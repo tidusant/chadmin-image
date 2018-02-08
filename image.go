@@ -71,7 +71,6 @@ func main() {
 			mycookie, err := c.Request.Cookie("sex")
 			checkError("get cookie myc", err)
 			ck := mycookie.Value
-
 			if ck != "" {
 				log.Debugf("check request")
 				log.Debugf("ck:%s", ck)
