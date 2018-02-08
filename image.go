@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/tidusant/c3m-common/c3mcommon"
 	"github.com/tidusant/c3m-common/log"
@@ -49,7 +50,7 @@ func main() {
 	router.GET("/:type/:filepath/:p", func(c *gin.Context) {
 		log.Debugf("header:%v", c.Request.Header)
 		log.Debugf("Request:%v", c.Request)
-
+		start := time.Now()
 		u, err := url.Parse(c.Request.Header.Get("Referer"))
 
 		checkError("get referer", err)
@@ -100,11 +101,14 @@ func main() {
 						} else {
 							filename += "/" + c.Param("p")
 						}
+						log.Debugf("after decode %s", time.Since(start).Nanoseconds())
 						log.Debugf("type %s, filepath %s, p %s", filelocal, filename, c.Param("p"))
 						log.Debugf("uploadfolder %s", uploadfolder)
 						if _, err := os.Stat(uploadfolder); err == nil {
 							log.Debugf("ServeFile")
+							log.Debugf("after checkfolder %s", time.Since(start).Nanoseconds())
 							http.ServeFile(c.Writer, c.Request, uploadfolder+"/"+filename)
+							log.Debugf("after ServeFile %s", time.Since(start).Nanoseconds())
 							return
 						}
 						log.Debugf("NOT ServeFile")
