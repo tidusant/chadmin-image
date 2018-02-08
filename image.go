@@ -54,6 +54,7 @@ func main() {
 	router.GET("/:type/:filepath/*p", func(c *gin.Context) {
 		log.Debugf("header:%v", c.Request.Header)
 		log.Debugf("Request:%v", c.Request)
+
 		u, err := url.Parse(c.Request.Header.Get("Referer"))
 		checkError("get referer", err)
 		log.Debugf("referer:%v", u)
