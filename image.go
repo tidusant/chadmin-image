@@ -63,70 +63,70 @@ func main() {
 			c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers,access-control-allow-credentials")
 			c.Header("Access-Control-Allow-Credentials", "true")
 			//ck := mycrypto.Decode(c.PostForm("data"))
-			mycookie, err := c.Request.Cookie("sex")
-			checkError("get cookie myc", err)
-			ck := mycookie.Value
-			if ck != "" {
-				log.Debugf("check request")
-				log.Debugf("ck:%s", ck)
-				log.Debugf("befor CheckRequest %s", time.Since(start).Nanoseconds())
-				//if rpsex.CheckRequest(c.Request.URL.Path, c.Request.UserAgent(), c.Request.Referer(), c.Request.RemoteAddr, "GET") {
-				log.Debugf("check sesion")
-				//if rpsex.CheckSession(ck) {
-				// log.Debugf("check aut")
-				// client, err := rpc.Dial("tcp", viper.GetString("RPCname.aut"))
-				// checkError("dial RPCAuth check login", err)
-				// reply := ""
-				// userIP, _, _ := net.SplitHostPort(c.Request.RemoteAddr)
-				// autCall := client.Go("Arith.Run", ck+"|"+userIP+"|"+"aut", &reply, nil)
-				// autreplyCall := <-autCall.Done
-				// checkError("RPCAuth.Go", autreplyCall.Error)
-				// client.Close()
+			// mycookie, err := c.Request.Cookie("sex")
+			// checkError("get cookie myc", err)
+			// ck := mycookie.Value
+			// if ck != "" {
+			log.Debugf("check request")
 
-				// //RPC call
-				// if reply != "" {
-				//log.Debugf("get folder")
-				//info := strings.Split(reply, "[+]")
-				//userid := info[0]
-				//shopid := info[1]
+			log.Debugf("befor CheckRequest %s", time.Since(start).Nanoseconds())
+			//if rpsex.CheckRequest(c.Request.URL.Path, c.Request.UserAgent(), c.Request.Referer(), c.Request.RemoteAddr, "GET") {
+			log.Debugf("check sesion")
+			//if rpsex.CheckSession(ck) {
+			// log.Debugf("check aut")
+			// client, err := rpc.Dial("tcp", viper.GetString("RPCname.aut"))
+			// checkError("dial RPCAuth check login", err)
+			// reply := ""
+			// userIP, _, _ := net.SplitHostPort(c.Request.RemoteAddr)
+			// autCall := client.Go("Arith.Run", ck+"|"+userIP+"|"+"aut", &reply, nil)
+			// autreplyCall := <-autCall.Done
+			// checkError("RPCAuth.Go", autreplyCall.Error)
+			// client.Close()
 
-				//userid := reply
-				log.Debugf("before decode %s", time.Since(start).Nanoseconds())
-				shopid := c.Param("p")
-				shopid = mycrypto.Decode(shopid)
-				filelocal := c.Param("type")
-				uploadfolder := imagefolder + "/common/"
-				filename := c.Param("filepath")
-				if filelocal == "files" {
-					uploadfolder = imagefolder + "/" + shopid
-				} else {
-					filename += "/" + c.Param("p")
-				}
-				log.Debugf("after decode %s", time.Since(start).Nanoseconds())
-				log.Debugf("type %s, filepath %s, p %s", filelocal, filename, c.Param("p"))
-				log.Debugf("uploadfolder %s", uploadfolder)
-				if _, err := os.Stat(uploadfolder); err == nil {
-					log.Debugf("ServeFile")
-					log.Debugf("after checkfolder %s", time.Since(start).Nanoseconds())
-					http.ServeFile(c.Writer, c.Request, uploadfolder+"/"+filename)
-					log.Debugf("after ServeFile %s", time.Since(start).Nanoseconds())
-					return
-				}
-				log.Debugf("NOT ServeFile")
+			// //RPC call
+			// if reply != "" {
+			//log.Debugf("get folder")
+			//info := strings.Split(reply, "[+]")
+			//userid := info[0]
+			//shopid := info[1]
 
-				// } else {
-				// 	log.Debugf("check aut fail")
-				// }
-				// } else {
-				// 	log.Debugf("check sesion fail")
-				// }
-				// } else {
-				// 	log.Debugf("check request fail")
-				// }
-
+			//userid := reply
+			log.Debugf("before decode %s", time.Since(start).Nanoseconds())
+			shopid := c.Param("p")
+			shopid = mycrypto.DecodeA(shopid)
+			filelocal := c.Param("type")
+			uploadfolder := imagefolder + "/common/"
+			filename := c.Param("filepath")
+			if filelocal == "files" {
+				uploadfolder = imagefolder + "/" + shopid
 			} else {
-				log.Debugf("check ck fail")
+				filename += "/" + c.Param("p")
 			}
+			log.Debugf("after decode %s", time.Since(start).Nanoseconds())
+			log.Debugf("type %s, filepath %s, p %s", filelocal, filename, c.Param("p"))
+			log.Debugf("uploadfolder %s", uploadfolder)
+			if _, err := os.Stat(uploadfolder); err == nil {
+				log.Debugf("ServeFile")
+				log.Debugf("after checkfolder %s", time.Since(start).Nanoseconds())
+				http.ServeFile(c.Writer, c.Request, uploadfolder+"/"+filename)
+				log.Debugf("after ServeFile %s", time.Since(start).Nanoseconds())
+				return
+			}
+			log.Debugf("NOT ServeFile")
+
+			// } else {
+			// 	log.Debugf("check aut fail")
+			// }
+			// } else {
+			// 	log.Debugf("check sesion fail")
+			// }
+			// } else {
+			// 	log.Debugf("check request fail")
+			// }
+
+			// } else {
+			// 	log.Debugf("check ck fail")
+			// }
 		} else {
 			log.Debugf("Not allow " + requestDomain)
 		}
