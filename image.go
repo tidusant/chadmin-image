@@ -1,6 +1,7 @@
 package main
 
 import (
+	"c3m/common/mycrypto"
 	"fmt"
 
 	"github.com/tidusant/c3m-common/c3mcommon"
@@ -14,8 +15,6 @@ import (
 	"os"
 	"strconv"
 
-	"strings"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +26,7 @@ func main() {
 	//fmt.Println(mycrypto.Encode("abc,efc", 5))
 
 	flag.IntVar(&port, "port", 8083, "help message for flagname")
-	flag.BoolVar(&debug, "debug", false, "Indicates if debug messages should be printed in log files")
+	flag.BoolVar(&debug, "debug", true, "Indicates if debug messages should be printed in log files")
 	flag.StringVar(&imagefolder, "imagefolder", "../upload/images", "Indicates if debug messages should be printed in log files")
 	flag.Parse()
 
@@ -47,7 +46,7 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/:type/:filepath/*p", func(c *gin.Context) {
+	router.GET("/:type/:filepath/:p", func(c *gin.Context) {
 		log.Debugf("header:%v", c.Request.Header)
 		log.Debugf("Request:%v", c.Request)
 
@@ -85,12 +84,14 @@ func main() {
 
 						// //RPC call
 						// if reply != "" {
-						log.Debugf("get folder")
-						info := strings.Split(reply, "[+]")
+						//log.Debugf("get folder")
+						//info := strings.Split(reply, "[+]")
 						//userid := info[0]
-						shopid := info[1]
+						//shopid := info[1]
 
 						//userid := reply
+						shopid := c.Param("p")
+						shopid = mycrypto.Decode(shopid)
 						filelocal := c.Param("type")
 						uploadfolder := imagefolder + "/common/"
 						filename := c.Param("filepath")
