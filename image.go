@@ -1,11 +1,11 @@
 package main
 
 import (
-	"c3m/common/mycrypto"
 	"fmt"
 
 	"github.com/tidusant/c3m-common/c3mcommon"
 	"github.com/tidusant/c3m-common/log"
+	"github.com/tidusant/c3m-common/mycrypto"
 	rpsex "github.com/tidusant/chadmin-repo/session"
 
 	"flag"
