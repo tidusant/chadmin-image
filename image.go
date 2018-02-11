@@ -30,7 +30,6 @@ func main() {
 	flag.BoolVar(&debug, "debug", false, "Indicates if debug messages should be printed in log files")
 	flag.StringVar(&imagefolder, "imagefolder", "../upload/images", "Indicates if debug messages should be printed in log files")
 	flag.Parse()
-
 	logLevel := log.DebugLevel
 	if !debug {
 		logLevel = log.InfoLevel
