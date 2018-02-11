@@ -52,7 +52,6 @@ func main() {
 		log.Debugf("Request:%v", c.Request)
 		start := time.Now()
 		u, err := url.Parse(c.Request.Header.Get("Referer"))
-
 		checkError("get referer", err)
 		log.Debugf("referer:%v", u)
 		requestDomain := c3mcommon.CheckDomain("http://" + u.Host)
