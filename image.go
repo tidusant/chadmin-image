@@ -1,7 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/csv"
+	"strings"
 	"time"
 
 	"github.com/tidusant/c3m-common/c3mcommon"
@@ -30,15 +32,15 @@ func main() {
 	flag.BoolVar(&debug, "debug", false, "Indicates if debug messages should be printed in log files")
 	flag.StringVar(&imagefolder, "imagefolder", "../upload/images", "Indicates if debug messages should be printed in log files")
 	flag.Parse()
-	logLevel := log.DebugLevel
+	//logLevel := log.DebugLevel
 	if !debug {
-		logLevel = log.InfoLevel
+		//logLevel = log.InfoLevel
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	log.SetOutputFile(fmt.Sprintf("image-"+strconv.Itoa(port)), logLevel)
-	defer log.CloseOutputFile()
-	log.RedirectStdOut()
+	// log.SetOutputFile(fmt.Sprintf("image-"+strconv.Itoa(port)), logLevel)
+	// defer log.CloseOutputFile()
+	// log.RedirectStdOut()
 
 	log.Infof("running with port:" + strconv.Itoa(port))
 
@@ -70,45 +72,58 @@ func main() {
 
 			log.Debugf("befor CheckRequest %s", time.Since(start).Nanoseconds())
 			if rpsex.CheckRequest(c.Request.URL.Path, c.Request.UserAgent(), c.Request.Referer(), c.Request.RemoteAddr, "GET") {
-				log.Debugf("check sesion")
-				//if rpsex.CheckSession(ck) {
-				// log.Debugf("check aut")
-				// client, err := rpc.Dial("tcp", viper.GetString("RPCname.aut"))
-				// checkError("dial RPCAuth check login", err)
-				// reply := ""
-				// userIP, _, _ := net.SplitHostPort(c.Request.RemoteAddr)
-				// autCall := client.Go("Arith.Run", ck+"|"+userIP+"|"+"aut", &reply, nil)
-				// autreplyCall := <-autCall.Done
-				// checkError("RPCAuth.Go", autreplyCall.Error)
-				// client.Close()
 
-				// //RPC call
-				// if reply != "" {
-				//log.Debugf("get folder")
-				//info := strings.Split(reply, "[+]")
-				//userid := info[0]
-				//shopid := info[1]
-
-				//userid := reply
-				log.Debugf("before decode %s", time.Since(start).Nanoseconds())
-				shopid := c.Param("p")
-				shopid = mycrypto.DecodeA(shopid)
 				filelocal := c.Param("type")
 				uploadfolder := imagefolder + "/common/"
 				filename := c.Param("filepath")
 				if filelocal == "files" {
+					shopid := c.Param("p")
+					shopid = mycrypto.DecodeA(shopid)
 					uploadfolder = imagefolder + "/" + shopid
+				} else if filelocal == "customer" {
+					shopid := c.Param("p")
+					shopid = mycrypto.Decode(shopid)
+					session := mycrypto.Decode(filename)
+					var data url.Values
+					datastr := "cusexport|" + session + "|" + shopid
+					log.Debugf("reques response %s", datastr)
+					rs := c3mcommon.RequestService(mycrypto.Encode3(datastr), data)
+
+					//write csv
+					b := &bytes.Buffer{}
+					w := csv.NewWriter(b)
+
+					if err := w.Write([]string{"phone"}); err != nil {
+						checkError("error writing record to csv:", err)
+					}
+					phones := strings.Split(rs, ",")
+					for _, phone := range phones {
+						if phone != "" {
+							var record []string
+							record = append(record, phone)
+							if err := w.Write(record); err != nil {
+								checkError("error writing record to csv:", err)
+							}
+						}
+
+					}
+					w.Flush()
+
+					if err := w.Error(); err != nil {
+						checkError("Error w.flush", err)
+					}
+					c.Header("Content-Description", "File Transfer")
+					c.Header("Content-Disposition", "attachment; filename=contacts.csv")
+					c.Data(http.StatusOK, "text/csv", b.Bytes())
+					//c.String(http.StatusOK, rs)
+					return
 				} else {
 					filename += "/" + c.Param("p")
 				}
-				log.Debugf("after decode %s", time.Since(start).Nanoseconds())
-				log.Debugf("type %s, filepath %s, p %s", filelocal, filename, c.Param("p"))
-				log.Debugf("uploadfolder %s", uploadfolder)
+				log.Debugf("uploadfolder %s", uploadfolder+"/"+filename)
 				if _, err := os.Stat(uploadfolder); err == nil {
-					log.Debugf("ServeFile")
-					log.Debugf("after checkfolder %s", time.Since(start).Nanoseconds())
+
 					http.ServeFile(c.Writer, c.Request, uploadfolder+"/"+filename)
-					log.Debugf("after ServeFile %s", time.Since(start).Nanoseconds())
 					return
 				}
 				log.Debugf("NOT ServeFile")
