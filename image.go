@@ -105,7 +105,6 @@ func main() {
 								checkError("error writing record to csv:", err)
 							}
 						}
-
 					}
 					w.Flush()
 
