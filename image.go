@@ -5,8 +5,6 @@ import (
 	"encoding/csv"
 	"strings"
 	"time"
-
-
 	"github.com/tidusant/c3m-common/c3mcommon"
 	"github.com/tidusant/c3m-common/log"
 	"github.com/tidusant/c3m-common/mycrypto"
