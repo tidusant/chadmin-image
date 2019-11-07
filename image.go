@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bytes"
-	"encoding/csv"
-	"strings"
 	"time"
+
 	"github.com/tidusant/c3m-common/c3mcommon"
 	"github.com/tidusant/c3m-common/log"
 	"github.com/tidusant/c3m-common/mycrypto"
@@ -27,7 +25,7 @@ func main() {
 	var imagefolder string
 	//fmt.Println(mycrypto.Encode("abc,efc", 5))
 
-	flag.IntVar(&port, "port", 8083, "help message for flagname")
+	flag.IntVar(&port, "port", 7877, "help message for flagname")
 	flag.BoolVar(&debug, "debug", false, "Indicates if debug messages should be printed in log files")
 	flag.StringVar(&imagefolder, "imagefolder", "../upload/images", "Indicates if debug messages should be printed in log files")
 	flag.Parse()
@@ -79,42 +77,43 @@ func main() {
 					shopid := c.Param("p")
 					shopid = mycrypto.DecodeA(shopid)
 					uploadfolder = imagefolder + "/" + shopid
-				} else if filelocal == "customer" {
-					shopid := c.Param("p")
-					shopid = mycrypto.Decode(shopid)
-					session := mycrypto.Decode(filename)
-					var data url.Values
-					datastr := "cusexport|" + session + "|" + shopid
-					log.Debugf("reques response %s", datastr)
-					rs := c3mcommon.RequestService(mycrypto.Encode3(datastr), data)
+					// }
+					// else if filelocal == "customer" {
+					// 	shopid := c.Param("p")
+					// 	shopid = mycrypto.Decode(shopid)
+					// 	session := mycrypto.Decode(filename)
+					// 	var data url.Values
+					// 	datastr := "cusexport|" + session + "|" + shopid
+					// 	log.Debugf("reques response %s", datastr)
+					// 	rs := c3mcommon.RequestService(mycrypto.Encode3(datastr), data)
 
-					//write csv
-					b := &bytes.Buffer{}
-					w := csv.NewWriter(b)
+					// 	//write csv
+					// 	b := &bytes.Buffer{}
+					// 	w := csv.NewWriter(b)
 
-					if err := w.Write([]string{"phone"}); err != nil {
-						checkError("error writing record to csv:", err)
-					}
-					phones := strings.Split(rs, ",")
-					for _, phone := range phones {
-						if phone != "" {
-							var record []string
-							record = append(record, phone)
-							if err := w.Write(record); err != nil {
-								checkError("error writing record to csv:", err)
-							}
-						}
-					}
-					w.Flush()
+					// 	if err := w.Write([]string{"phone"}); err != nil {
+					// 		checkError("error writing record to csv:", err)
+					// 	}
+					// 	phones := strings.Split(rs, ",")
+					// 	for _, phone := range phones {
+					// 		if phone != "" {
+					// 			var record []string
+					// 			record = append(record, phone)
+					// 			if err := w.Write(record); err != nil {
+					// 				checkError("error writing record to csv:", err)
+					// 			}
+					// 		}
+					// 	}
+					// 	w.Flush()
 
-					if err := w.Error(); err != nil {
-						checkError("Error w.flush", err)
-					}
-					c.Header("Content-Description", "File Transfer")
-					c.Header("Content-Disposition", "attachment; filename=contacts.csv")
-					c.Data(http.StatusOK, "text/csv", b.Bytes())
-					//c.String(http.StatusOK, rs)
-					return
+					// 	if err := w.Error(); err != nil {
+					// 		checkError("Error w.flush", err)
+					// 	}
+					// 	c.Header("Content-Description", "File Transfer")
+					// 	c.Header("Content-Disposition", "attachment; filename=contacts.csv")
+					// 	c.Data(http.StatusOK, "text/csv", b.Bytes())
+					// 	//c.String(http.StatusOK, rs)
+					// 	return
 				} else {
 					filename += "/" + c.Param("p")
 				}
