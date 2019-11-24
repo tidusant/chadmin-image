@@ -13,7 +13,7 @@ import (
 	rpimg "github.com/tidusant/chadmin-repo/vrsgim"
 
 	//	"c3m/common/inflect"
-	//	"c3m/log"
+	//	"c3m/log"v test dev
 
 	"flag"
 	"fmt"
