@@ -26,7 +26,7 @@ func main() {
 	var port int
 	var debug bool
 	var imagefolder string
-	//fmt.Println(mycrypto.Encode("abc,efc", 5))
+	//fmt.Println(mycrypto.Encode("abc,efc", 5))d
 
 	flag.IntVar(&port, "port", 8083, "help message for flagname")
 	flag.BoolVar(&debug, "debug", false, "Indicates if debug messages should be printed in log files")
